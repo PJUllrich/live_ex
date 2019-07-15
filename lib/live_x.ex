@@ -3,42 +3,39 @@ defmodule LiveX do
   Documentation for LiveX.
   """
 
-  import Phoenix.LiveView, only: [assign: 3]
+  @callback init(LiveView.Socket) :: LiveView.Socket
 
-  @doc """
-  Configures the socket with an initial setup.
+  defmacro __using__(_opts \\ []) do
+    quote do
+      import Phoenix.LiveView, only: [assign: 3]
 
-  The `pid` of the parent process is stored in the `socket.assigns` so that
-  Child processes can dispatch Actions on the parents's Store.
-  """
-  def init(initial_state, socket) do
-    socket
-    |> assign(:state, initial_state)
-    |> assign(:pid, self())
-  end
+      @doc """
+      Configures the socket with an initial setup.
 
-  @doc """
-  Joins a child process to the Store of a parent process.
-  """
-  def join(params, socket) do
-    socket
-    |> assign(:state, params.state)
-    |> assign(:pid, params.pid)
-  end
+      The `pid` of the parent process is stored in the `socket.assigns` so that
+      Child processes can dispatch Actions on the parents's Store.
+      """
+      def init(state, socket) do
+        state
+        |> Keyword.put_new(:pid, self())
+        |> Enum.reduce(socket, fn {key, val}, socket -> assign(socket, key, val) end)
+      end
 
-  @doc """
-  Dispatch an Action with a `type`, optional payload.
-  """
-  def dispatch(type, payload \\ %{}, socket) do
-    event = %{
-      type: String.to_atom(type),
-      payload: payload
-    }
+      @doc """
+      Dispatch an Action with a `type`, optional payload.
+      """
+      def dispatch(type, payload \\ %{}, socket) do
+        event = %{
+          type: String.to_atom(type),
+          payload: payload
+        }
 
-    send(socket.assigns.pid, event)
-  end
+        send(socket.assigns.pid, event)
+      end
 
-  def commit(type, payload, socket) do
-    apply(__MODULE__, type, [socket, payload])
+      defp commit(type, payload, socket) do
+        apply(__MODULE__, type, [payload, socket])
+      end
+    end
   end
 end
