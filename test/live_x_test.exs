@@ -64,11 +64,16 @@ defmodule LiveXTest do
   describe "commit" do
     test "commit updates the no_payload state", context do
       socket = TestImpl.init(context[:socket])
-      TestImpl.dispatch("no_payload", socket)
-
-      assert_receive %{payload: %{}, type: :no_payload}
+      socket = TestImpl.commit(:no_payload, %{}, socket)
 
       assert socket.assigns.no_payload == true
+    end
+
+    test "commit updates the with_payload state", context do
+      socket = TestImpl.init(context[:socket])
+      socket = TestImpl.commit(:with_payload, "updated_state", socket)
+
+      assert socket.assigns.with_payload == "updated_state"
     end
   end
 end

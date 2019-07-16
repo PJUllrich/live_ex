@@ -33,7 +33,7 @@ defmodule LiveX do
         send(socket.assigns.pid, event)
       end
 
-      defp commit(type, payload, socket) do
+      def commit(type, payload, socket) do
         apply(__MODULE__, type, [payload, socket])
       end
     end
