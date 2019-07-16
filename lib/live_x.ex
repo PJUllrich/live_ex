@@ -7,6 +7,8 @@ defmodule LiveX do
 
   defmacro __using__(_opts \\ []) do
     quote do
+      require Logger
+
       import Phoenix.LiveView, only: [assign: 3]
 
       @doc """
@@ -34,7 +36,18 @@ defmodule LiveX do
       end
 
       def commit(type, payload, socket) do
-        apply(__MODULE__, type, [payload, socket])
+        state_before = socket.assigns
+        socket = apply(__MODULE__, type, [payload, socket])
+        state_after = socket.assigns
+
+        Logger.debug("LiveX
+          - Action:  #{type}
+          - Payload: #{inspect(payload)}
+          - Before:  #{inspect(state_before)}
+          - After:   #{inspect(state_after)}
+          ")
+
+        socket
       end
     end
   end
