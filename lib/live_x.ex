@@ -24,7 +24,7 @@ defmodule LiveX do
       end
 
       @doc """
-      Dispatch an Action with a `type`, optional payload.
+      Dispatch an Action with a `type` and an optional payload.
       """
       def dispatch(type, payload \\ %{}, socket) do
         event = %{
@@ -35,17 +35,28 @@ defmodule LiveX do
         send(socket.assigns.pid, event)
       end
 
+      @doc """
+      Commit a change to the store.
+
+
+      """
       def commit(type, payload, socket) do
+        log(type, payload, socket, fn ->
+          apply(__MODULE__, type, [payload, socket])
+        end)
+      end
+
+      defp log(type, payload, socket, fun) do
         state_before = socket.assigns
-        socket = apply(__MODULE__, type, [payload, socket])
+        socket = fun.()
         state_after = socket.assigns
 
         Logger.debug("LiveX
-          - Action:  #{type}
-          - Payload: #{inspect(payload)}
-          - Before:  #{inspect(state_before)}
-          - After:   #{inspect(state_after)}
-          ")
+            - Action:  #{type}
+            - Payload: #{inspect(payload)}
+            - Before:  #{inspect(state_before)}
+            - After:   #{inspect(state_after)}
+            ")
 
         socket
       end
