@@ -15,9 +15,9 @@ defmodule LiveX do
       The `pid` of the parent process is stored in the `socket.assigns` so that
       Child processes can dispatch Actions on the parents's Store.
       """
-      def init(state, socket) do
+      def init(state, socket) when is_map(state) do
         state
-        |> Keyword.put_new(:pid, self())
+        |> Map.put_new(:pid, self())
         |> Enum.reduce(socket, fn {key, val}, socket -> assign(socket, key, val) end)
       end
 

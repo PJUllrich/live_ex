@@ -18,21 +18,21 @@ defmodule LiveXTest do
   end
 
   describe "init" do
-    test "init sets initial state", context do
-      state = [a: 1, b: "Test", c: nil]
+    test "sets initial state", context do
+      state = %{"d" => "Test", a: 1, b: "Test", c: nil}
       socket = TestImpl.init(state, context[:socket])
 
-      assert socket.assigns.a == Keyword.get(state, :a)
-      assert socket.assigns.b == Keyword.get(state, :b)
-      assert socket.assigns.c == Keyword.get(state, :c)
+      assert socket.assigns.a == Map.get(state, :a)
+      assert socket.assigns.b == Map.get(state, :b)
+      assert socket.assigns.c == Map.get(state, :c)
     end
 
-    test "init raises when initial state is no Keyword List", context do
-      state_map = %{a: 1, b: "Test", c: nil}
+    test "raises when initial state is no map List", context do
+      state_keyword = [a: 1, b: "Test", c: nil]
       state_list = [:a, :b, :c]
 
       assert_raise FunctionClauseError, fn ->
-        TestImpl.init(state_map, context[:socket])
+        TestImpl.init(state_keyword, context[:socket])
       end
 
       assert_raise FunctionClauseError, fn ->
@@ -42,7 +42,7 @@ defmodule LiveXTest do
   end
 
   describe "dispatch" do
-    test "dispatch sends event to Store PID", context do
+    test "sends event to Store PID", context do
       socket = TestImpl.init(context[:socket])
 
       event = %{
@@ -54,7 +54,7 @@ defmodule LiveXTest do
       assert_receive(event)
     end
 
-    test "dispatch raises when `init` was not called", context do
+    test "raises when `init` was not called", context do
       assert_raise KeyError, fn ->
         TestImpl.dispatch("test", "test", context[:socket])
       end
@@ -62,14 +62,14 @@ defmodule LiveXTest do
   end
 
   describe "commit" do
-    test "commit updates the no_payload state", context do
+    test "updates the no_payload state", context do
       socket = TestImpl.init(context[:socket])
       socket = TestImpl.commit(:no_payload, %{}, socket)
 
       assert socket.assigns.no_payload == true
     end
 
-    test "commit updates the with_payload state", context do
+    test "updates the with_payload state", context do
       socket = TestImpl.init(context[:socket])
       socket = TestImpl.commit(:with_payload, "updated_state", socket)
 

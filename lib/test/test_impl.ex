@@ -7,10 +7,10 @@ defmodule LiveX.TestImpl do
 
   @behaviour LiveX
 
-  @initial_state [
+  @initial_state %{
     no_payload: false,
     with_payload: "default"
-  ]
+  }
 
   def init(socket) do
     init(@initial_state, socket)
