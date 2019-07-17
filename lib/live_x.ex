@@ -3,7 +3,9 @@ defmodule LiveX do
   Documentation for LiveX.
   """
 
-  @callback init(LiveView.Socket) :: LiveView.Socket
+  @type socket :: Phoenix.LiveView.Socket.t()
+
+  @callback init(socket) :: socket
 
   defmacro __using__(_opts \\ []) do
     quote do
@@ -17,6 +19,7 @@ defmodule LiveX do
       The `pid` of the parent process is stored in the `socket.assigns` so that
       Child processes can dispatch Actions on the parents's Store.
       """
+      @spec init(map, socket) :: socket
       def init(state, socket) when is_map(state) do
         state
         |> Map.put_new(:pid, self())
@@ -26,13 +29,20 @@ defmodule LiveX do
       @doc """
       Dispatch an Action with a `type` and an optional payload.
       """
-      def dispatch(type, payload \\ %{}, socket) do
-        event = %{
-          type: String.to_atom(type),
-          payload: payload
-        }
+      def dispatch(type, payload \\ nil, socket)
 
-        send(socket.assigns.pid, event)
+      @spec dispatch(atom, any, socket) :: map
+      def dispatch(type, payload, socket) when is_atom(type) do
+        action = %{type: type, payload: payload}
+
+        send(socket.assigns.pid, action)
+      end
+
+      @spec dispatch(String.t(), any, socket) :: map
+      def dispatch(type, payload, socket) do
+        type
+        |> String.to_atom()
+        |> dispatch(payload, socket)
       end
 
       @doc """
@@ -40,10 +50,14 @@ defmodule LiveX do
 
 
       """
+      @spec commit(atom, any, socket) :: {:noreply, socket}
       def commit(type, payload, socket) do
-        log(type, payload, socket, fn ->
-          apply(__MODULE__, type, [payload, socket])
-        end)
+        socket =
+          log(type, payload, socket, fn ->
+            apply(__MODULE__, type, [payload, socket])
+          end)
+
+        {:noreply, socket}
       end
 
       defp log(type, payload, socket, fun) do
