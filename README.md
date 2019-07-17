@@ -10,6 +10,7 @@ State changes (aka. `Actions`) are forced through a `Dispatcher` (or funnel) in 
 the changes are applied to a global state managed by a `Store`. The same store can be shared by multiple LiveViews.
 
 The following diagram shows the flow of the Flux pattern:
+
 ![flux pattern diagram](/docs/images/flux.png)
 
 ## Installation
@@ -19,7 +20,7 @@ Add `live_x` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:live_x, "~> 0.1.0"}
+    {:live_x, github: "pjullrich/liveX" }
   ]
 end
 ```
