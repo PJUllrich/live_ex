@@ -15,12 +15,12 @@ The following diagram shows the flow of the Flux pattern:
 
 ## Installation
 
-Add `live_x` to your list of dependencies in `mix.exs`:
+Add `live_ex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:live_x, github: "pjullrich/LiveEx" }
+    {:live_ex, github: "pjullrich/LiveEx" }
   ]
 end
 ```
@@ -121,4 +121,4 @@ Currently, the `dispatch/3` function sends a message to its own process to avoid
 ## Development
 
 1. Checkout the project and run tests with `mix test`.
-1. Update the test implementation in `lib/test/test_impl.ex` whenever you make changes to `lib/live_x.ex`
+1. Update the test implementation in `lib/test/test_impl.ex` whenever you make changes to `lib/live_ex.ex`
