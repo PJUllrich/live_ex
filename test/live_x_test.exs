@@ -1,8 +1,8 @@
-defmodule LiveXTest do
+defmodule LiveExTest do
   use ExUnit.Case, async: true
-  doctest LiveX
+  doctest LiveEx
 
-  alias LiveX.Example
+  alias LiveEx.Example
   alias Phoenix.LiveView.View
   alias Phoenix.LiveViewTest.{Endpoint, Router}
 

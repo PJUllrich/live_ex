@@ -1,11 +1,11 @@
-# LiveX - State Management for Phoenix LiveViews
+# LiveEx - State Management for Phoenix LiveViews
 
-LiveX is a State Management library for [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view).
+LiveEx is a State Management library for [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view).
 
-LiveX is based on the [Flux pattern](https://github.com/facebook/flux/tree/master/examples/flux-concepts)
+LiveEx is based on the [Flux pattern](https://github.com/facebook/flux/tree/master/examples/flux-concepts)
 and its implementation is inspired by the [Vuex](https://vuex.vuejs.org/) library.
 
-LiveX helps organize the state changes and data flow in LiveView frontends.
+LiveEx helps organize the state changes and data flow in LiveView frontends.
 State changes (aka. `Actions`) are forced through a `Dispatcher` (or funnel) in a sequencial FIFO manner before
 the changes are applied to a global state managed by a `Store`. The same store can be shared by multiple LiveViews.
 
@@ -20,22 +20,22 @@ Add `live_x` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:live_x, github: "pjullrich/liveX" }
+    {:live_x, github: "pjullrich/LiveEx" }
   ]
 end
 ```
 
 ## How to use
 
-Have a look at the [Example Implementation](https://github.com/PJUllrich/LiveX/blob/master/lib/example/example.ex) for a fully documented implementation of a `LiveX Store`.
+Have a look at the [Example Implementation](https://github.com/PJUllrich/LiveEx/blob/master/lib/example/example.ex) for a fully documented implementation of a `LiveEx Store`.
 
 ### Initialize the Store
 
-In order to use the LiveX Store, create a dedicated `module` for it, which adhere's to the following structure:
+In order to use the LiveEx Store, create a dedicated `module` for it, which adhere's to the following structure:
 
 ```elixir
 defmodule MyAppWeb.Store do
-  use LiveX
+  use LiveEx
 
   @initial_store %{
     a: 1,

@@ -1,12 +1,12 @@
-defmodule LiveX.Example do
+defmodule LiveEx.Example do
   @moduledoc """
-  Example Implementation of a LiveX Store that is used by `Phoenix.LiveView`s.
+  Example Implementation of a LiveEx Store that is used by `Phoenix.LiveView`s.
   """
 
-  use LiveX
+  use LiveEx
 
   # Optional and for type-safety during development only
-  @behaviour LiveX
+  @behaviour LiveEx
   @type socket :: Phoenix.LiveView.Socket.t()
 
   # Set an initial (global) state.

@@ -1,6 +1,6 @@
-defmodule LiveX do
+defmodule LiveEx do
   @moduledoc """
-  Documentation for LiveX.
+  Documentation for LiveEx.
   """
 
   @type socket :: Phoenix.LiveView.Socket.t()
@@ -65,7 +65,7 @@ defmodule LiveX do
         socket = fun.()
         state_after = socket.assigns
 
-        Logger.debug("LiveX
+        Logger.debug("LiveEx
             - Action:  #{type}
             - Payload: #{inspect(payload)}
             - Before:  #{inspect(state_before)}
