@@ -1,10 +1,16 @@
-defmodule LiveX.MixProject do
+defmodule LiveEx.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :live_x,
+      app: :live_ex,
       version: "0.1.0",
+      description: "Flux based State Management for Phoenix LiveView",
+      source_url: "https://github.com/PJUllrich/live_ex",
+      package: [
+        licenses: ["MIT"],
+        links: %{"GitHub" => "https://github.com/PJUllrich/live_ex"}
+      ],
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps()
