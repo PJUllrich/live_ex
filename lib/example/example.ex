@@ -40,8 +40,8 @@ defmodule LiveEx.Example do
 
   `action` here has the format: `%{type: :no_payload, payload: %{}}`
   """
-  @spec handle_info(%{type: atom, payload: map}, socket) :: {:noreply, socket}
-  def handle_call(%{type: :no_payload} = action, socket) do
+  @spec handle_info(%{type: String.t(), payload: map}, socket) :: {:noreply, socket}
+  def handle_info(%{type: "no_payload"} = action, socket) do
     commit(action.type, %{}, socket)
   end
 
@@ -50,7 +50,7 @@ defmodule LiveEx.Example do
 
   `action` here has the format: `%{type: :with_payload, payload: any}`
   """
-  def handle_info(%{type: :with_payload} = action, socket) do
+  def handle_info(%{type: "with_payload"} = action, socket) do
     commit(action.type, action.payload, socket)
   end
 

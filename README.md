@@ -50,11 +50,11 @@ defmodule MyAppWeb.Store do
 
   # Actions
 
-  def handle_info(%{type: :my_action} = action, socket) do
+  def handle_info(%{type: "my_action"} = action, socket) do
     # Perform any operation with the payload here. For example:
     new_state = socket.assigns.a + action.payload
 
-    commit(:my_action, new_state, socket)
+    commit("my_action", new_state, socket)
   end
 
   # Mutations

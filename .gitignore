@@ -23,3 +23,5 @@ erl_crash.dump
 live_ex-*.tar
 
 /.elixir_ls/
+
+.DS_store

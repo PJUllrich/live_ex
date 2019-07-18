@@ -29,28 +29,17 @@ defmodule LiveEx do
       @doc """
       Dispatch an Action with a `type` and an optional payload.
       """
-      def dispatch(type, payload \\ nil, socket)
-
-      @spec dispatch(atom, any, socket) :: map
-      def dispatch(type, payload, socket) when is_atom(type) do
+      @spec dispatch(String.t(), any, socket) :: map
+      def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
         send(socket.assigns.pid, action)
       end
 
-      @spec dispatch(String.t(), any, socket) :: map
-      def dispatch(type, payload, socket) do
-        type
-        |> String.to_atom()
-        |> dispatch(payload, socket)
-      end
-
       @doc """
       Commit a change to the store.
-
-
       """
-      @spec commit(atom, any, socket) :: {:noreply, socket}
+      @spec commit(String.t(), any, socket) :: {:noreply, socket}
       def commit(type, payload, socket) do
         socket =
           log(type, payload, socket, fn ->

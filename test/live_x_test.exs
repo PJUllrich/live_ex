@@ -46,24 +46,12 @@ defmodule LiveExTest do
       socket = Example.init(context[:socket])
 
       event = %{
-        type: :test_event,
+        type: "test_event",
         payload: "test_payload"
       }
 
       Example.dispatch(event.type, event.payload, socket)
       assert_receive(event)
-    end
-
-    test "converts a string action type to an atom", context do
-      socket = Example.init(context[:socket])
-
-      event = %{
-        type: "test_event",
-        payload: "test_payload"
-      }
-
-      result = Example.dispatch(event.type, event.payload, socket)
-      assert result.type == String.to_atom(event.type)
     end
 
     test "raises when `init` was not called", context do
