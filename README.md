@@ -24,7 +24,7 @@ the views that a state updates is available.
 
 ## Why this library?
 
-I completed a medium-sized project using LiveView recently in which I only used 2 nested LiveViews. I ran into the typical problem that I lost the overview of how and when the state shared by the 2 LiveViews changed and whether the views transitioned from one state to another without state corruption (e.g. some variable wasn't updated properly). Therefore, I created this project to help you (and me) to use LiveView for larger than example projects.
+I completed a medium-sized project using LiveView recently in which I used 2 nested LiveViews. I ran into the typical problem that I lost the oversight of how and when the state shared by the 2 LiveViews changed and whether the views transitioned from one state to another without state corruption (e.g. some variable wasn't updated properly). Therefore, I created this project to help you (and me) to use LiveView for larger than example projects.
 
 ## Installation
 
