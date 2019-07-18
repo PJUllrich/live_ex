@@ -5,13 +5,26 @@ LiveEx is a State Management library for [Phoenix LiveView](https://github.com/p
 LiveEx is based on the [Flux pattern](https://github.com/facebook/flux/tree/master/examples/flux-concepts)
 and its implementation is inspired by the [Vuex](https://vuex.vuejs.org/) library.
 
-LiveEx helps organize the state changes and data flow in LiveView frontends.
-State changes (aka. `Actions`) are forced through a `Dispatcher` (or funnel) in a sequencial FIFO manner before
-the changes are applied to a global state managed by a `Store`. The same store can be shared by multiple LiveViews.
+## What is the Flux pattern?
 
-The following diagram shows the flow of the Flux pattern:
+The Flux pattern tries to solve the problem of middle to large single-page applications (SPAs) that
+the oversight of which state changes are applied when and from where can be lost easily. Additionally, the
+information flow within a reasonably sized SPA becomes exponentially more complex the more the SPA grows in terms of components.
+
+The Flux pattern proposes the solution a `Store` for the state of the SPA that can only be changed through a `Dispatcher`,
+which can be seen as a funnel through which every state change has to pass before it is applied. This sequentializing of
+state changes helps to keep an overview of when and how the state was changed. The information flows become much clearer
+since they are represented by the sequence and order of state changes.
+
+The diagram below shows the flow of the Flux pattern. A state change is initiated by dispatching an `Action`, which has a `type` and an optional `payload`.
+The `Action` then commits a `Mutation`, which actually mutates/changes the state. The new state is then saved in the `Store` again. The `Store` notifies
+the views that a state updates is available.
 
 ![flux pattern diagram](/docs/images/flux.png)
+
+## Why this library?
+
+I completed a medium-sized project using LiveView recently and although I only used 2 nested LiveViews, I already ran into the problem that I lost the overview of how and when the state changes. Therefore, I created this project to help you (and me) to use LiveView for larger than example projects.
 
 ## Installation
 
