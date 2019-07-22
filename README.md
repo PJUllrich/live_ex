@@ -78,12 +78,20 @@ defmodule MyAppWeb.Store do
 end
 ```
 
-Initialize the `Store` in the `mount/2` function of your outermost (i.e. `root`) LiveView, which encapsulates the nested (i.e. `child` )LiveViews.
+Initialize the `Store` in the `mount/2` function of your outermost (i.e. `root`) LiveView, which encapsulates the nested (i.e. `child`) LiveViews. Since the LiveEx store currently runs in the same process as your `root` LiveView, we need delegate any Action callbacks (i.e. `handle_info`) to the Store module. Add the `defdelegate` line **below** any `handle_info` calls you want to make in your LiveView.
 
 ```elixir
+alias MyAppWeb.Store
+
+...
+
 def mount(_session, socket) do
-  {:ok, MyAppWeb.Store.init(socket)}
+  {:ok, Store.init(socket)}
 end
+
+...
+
+defdelegate handle_info(msg, socket), to: Store
 ```
 
 Pass all `Store` variables to nested LiveViews and initialize the `Store` within their `mount/2` function as well.
