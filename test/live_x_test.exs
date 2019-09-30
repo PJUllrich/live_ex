@@ -3,15 +3,16 @@ defmodule LiveExTest do
   doctest LiveEx
 
   alias LiveEx.Example
-  alias Phoenix.LiveView.View
-  alias Phoenix.LiveViewTest.{Endpoint, Router}
+  alias Phoenix.LiveView.{View, Socket}
+  alias Phoenix.LiveViewTest.Endpoint
 
   # Gets called before each test.
   # Creates a LiveView socket and adds it to the test `context`.
   setup do
     socket =
-      Endpoint
-      |> View.build_socket(Router, %{connected?: true})
+      %Socket{endpoint: Endpoint}
+      |> View.configure_socket(%{})
+      |> Map.merge(%{connected?: true})
       |> View.post_mount_prune()
 
     [socket: socket]
