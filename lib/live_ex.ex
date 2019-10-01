@@ -11,7 +11,7 @@ defmodule LiveEx do
     quote do
       require Logger
 
-      import Phoenix.LiveView, only: [assign: 3]
+      import Phoenix.LiveView, only: [assign: 3, assign_new: 3]
 
       @doc """
       Configures the socket with an initial setup.
@@ -23,7 +23,7 @@ defmodule LiveEx do
       def init(state, socket) when is_map(state) do
         state
         |> Map.put_new(:pid, self())
-        |> Enum.reduce(socket, fn {key, val}, socket -> assign(socket, key, val) end)
+        |> Enum.reduce(socket, fn {key, val}, socket -> assign_new(socket, key, fn -> val end) end)
       end
 
       @doc """
