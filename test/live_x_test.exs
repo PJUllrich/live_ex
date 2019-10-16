@@ -1,5 +1,5 @@
 defmodule LiveExTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   doctest LiveEx
 
   alias LiveEx.Example
@@ -9,6 +9,8 @@ defmodule LiveExTest do
   # Gets called before each test.
   # Creates a LiveView socket and adds it to the test `context`.
   setup do
+    Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
+
     socket =
       %Socket{endpoint: Endpoint}
       |> View.configure_socket(%{})
@@ -51,8 +53,8 @@ defmodule LiveExTest do
         payload: "test_payload"
       }
 
-      Example.dispatch(event.type, event.payload, socket)
-      assert_receive(event)
+      :ok = Example.dispatch(event.type, event.payload, socket)
+      assert_receive event, 1_000
     end
 
     test "raises when `init` was not called", context do

@@ -21,9 +21,16 @@ defmodule LiveEx do
       """
       @spec init(map, socket) :: socket
       def init(state, socket) when is_map(state) do
-        state
-        |> Map.put_new(:pid, self())
-        |> Enum.reduce(socket, fn {key, val}, socket -> assign_new(socket, key, fn -> val end) end)
+        socket =
+          state
+          |> Map.put_new(:topic, "live_ex_topic")
+          |> Enum.reduce(socket, fn {key, val}, socket ->
+            assign_new(socket, key, fn -> val end)
+          end)
+
+        Phoenix.PubSub.subscribe(:live_ex_pubsub, socket.assigns.topic)
+
+        socket
       end
 
       @doc """
@@ -33,7 +40,7 @@ defmodule LiveEx do
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
-        send(socket.assigns.pid, action)
+        Phoenix.PubSub.broadcast(:live_ex_pubsub, socket.assigns.topic, action)
       end
 
       @doc """
