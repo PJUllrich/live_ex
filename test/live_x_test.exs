@@ -1,13 +1,17 @@
 defmodule LiveExTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   doctest LiveEx
 
   alias LiveEx.Example
   alias Phoenix.LiveView.{View, Socket}
   alias Phoenix.LiveViewTest.Endpoint
 
-  # Gets called before each test.
-  # Creates a LiveView socket and adds it to the test `context`.
+  setup_all do
+    {:ok, _pid} = Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
+
+    :ok
+  end
+
   setup do
     socket =
       %Socket{endpoint: Endpoint}
@@ -20,7 +24,7 @@ defmodule LiveExTest do
 
   describe "init" do
     test "sets initial state", context do
-      state = %{"d" => "Test", a: 1, b: "Test", c: nil}
+      state = %{a: 1, b: "Test", c: nil}
       socket = Example.init(state, context[:socket])
 
       assert socket.assigns.a == Map.get(state, :a)
@@ -43,7 +47,7 @@ defmodule LiveExTest do
   end
 
   describe "dispatch" do
-    test "sends event to Store PID", context do
+    test "broadcasts an event to PubSub", context do
       socket = Example.init(context[:socket])
 
       event = %{
@@ -51,11 +55,11 @@ defmodule LiveExTest do
         payload: "test_payload"
       }
 
-      Example.dispatch(event.type, event.payload, socket)
-      assert_receive(event)
+      :ok = Example.dispatch(event.type, event.payload, socket)
+      assert_receive event
     end
 
-    test "raises when `init` was not called", context do
+    test "raises when `init` was not called before dispatching", context do
       assert_raise KeyError, fn ->
         Example.dispatch("test", "test", context[:socket])
       end

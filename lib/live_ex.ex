@@ -7,7 +7,7 @@ defmodule LiveEx do
 
   @callback init(socket) :: socket
 
-  defmacro __using__(_opts \\ []) do
+  defmacro __using__(opts) do
     quote do
       require Logger
 
@@ -21,9 +21,16 @@ defmodule LiveEx do
       """
       @spec init(map, socket) :: socket
       def init(state, socket) when is_map(state) do
-        state
-        |> Map.put_new(:pid, self())
-        |> Enum.reduce(socket, fn {key, val}, socket -> assign_new(socket, key, fn -> val end) end)
+        socket =
+          state
+          |> Map.put_new(:topic, "live_ex_topic")
+          |> Enum.reduce(socket, fn {key, val}, socket ->
+            assign_new(socket, key, fn -> val end)
+          end)
+
+        :ok = Phoenix.PubSub.subscribe(:live_ex_pubsub, socket.assigns.topic)
+
+        socket
       end
 
       @doc """
@@ -33,7 +40,7 @@ defmodule LiveEx do
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
-        send(socket.assigns.pid, action)
+        Phoenix.PubSub.broadcast(:live_ex_pubsub, socket.assigns.topic, action)
       end
 
       @doc """
@@ -41,10 +48,14 @@ defmodule LiveEx do
       """
       @spec commit(String.t(), any, socket) :: {:noreply, socket}
       def commit(type, payload, socket) do
+        fn_apply = fn -> apply(__MODULE__, type, [payload, socket]) end
+        log_output = unquote(Keyword.get(opts, :log, true))
+
         socket =
-          log(type, payload, socket, fn ->
-            apply(__MODULE__, type, [payload, socket])
-          end)
+          case log_output do
+            true -> log(type, payload, socket, fn_apply)
+            false -> fn_apply.()
+          end
 
         {:noreply, socket}
       end
