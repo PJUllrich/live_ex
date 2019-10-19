@@ -6,11 +6,13 @@ defmodule LiveExTest do
   alias Phoenix.LiveView.{View, Socket}
   alias Phoenix.LiveViewTest.Endpoint
 
-  # Gets called before each test.
-  # Creates a LiveView socket and adds it to the test `context`.
-  setup do
-    Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
+  setup_all do
+    {:ok, _pid} = Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
 
+    :ok
+  end
+
+  setup do
     socket =
       %Socket{endpoint: Endpoint}
       |> View.configure_socket(%{})
