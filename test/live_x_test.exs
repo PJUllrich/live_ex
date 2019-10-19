@@ -24,7 +24,7 @@ defmodule LiveExTest do
 
   describe "init" do
     test "sets initial state", context do
-      state = %{"d" => "Test", a: 1, b: "Test", c: nil}
+      state = %{a: 1, b: "Test", c: nil}
       socket = Example.init(state, context[:socket])
 
       assert socket.assigns.a == Map.get(state, :a)
@@ -47,7 +47,7 @@ defmodule LiveExTest do
   end
 
   describe "dispatch" do
-    test "sends event to Store PID", context do
+    test "broadcasts an event to PubSub", context do
       socket = Example.init(context[:socket])
 
       event = %{
@@ -56,10 +56,10 @@ defmodule LiveExTest do
       }
 
       :ok = Example.dispatch(event.type, event.payload, socket)
-      assert_receive event, 1_000
+      assert_receive event
     end
 
-    test "raises when `init` was not called", context do
+    test "raises when `init` was not called before dispatching", context do
       assert_raise KeyError, fn ->
         Example.dispatch("test", "test", context[:socket])
       end
