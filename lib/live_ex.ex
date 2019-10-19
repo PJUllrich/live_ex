@@ -7,7 +7,7 @@ defmodule LiveEx do
 
   @callback init(socket) :: socket
 
-  defmacro __using__(_opts \\ []) do
+  defmacro __using__(opts) do
     quote do
       require Logger
 
@@ -48,10 +48,14 @@ defmodule LiveEx do
       """
       @spec commit(String.t(), any, socket) :: {:noreply, socket}
       def commit(type, payload, socket) do
+        fn_apply = fn -> apply(__MODULE__, type, [payload, socket]) end
+        log_output = unquote(Keyword.get(opts, :log, true))
+
         socket =
-          log(type, payload, socket, fn ->
-            apply(__MODULE__, type, [payload, socket])
-          end)
+          case log_output do
+            true -> log(type, payload, socket, fn_apply)
+            false -> fn_apply.()
+          end
 
         {:noreply, socket}
       end
