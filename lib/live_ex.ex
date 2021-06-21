@@ -12,6 +12,8 @@ defmodule LiveEx do
       require Logger
 
       import Phoenix.LiveView, only: [assign: 3, assign_new: 3]
+      @pubsub_handler Keyword.get(:pubsub_handler, :live_ex_pubsub)
+
 
       @doc """
       Configures the socket with an initial setup.
@@ -28,7 +30,7 @@ defmodule LiveEx do
             assign_new(socket, key, fn -> val end)
           end)
 
-        :ok = Phoenix.PubSub.subscribe(:live_ex_pubsub, socket.assigns.topic)
+        :ok = Phoenix.PubSub.subscribe(@pubsub_handler, socket.assigns.topic)
 
         socket
       end
@@ -40,7 +42,7 @@ defmodule LiveEx do
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
-        Phoenix.PubSub.broadcast(:live_ex_pubsub, socket.assigns.topic, action)
+        Phoenix.PubSub.broadcast(@pubsub_handler, socket.assigns.topic, action)
       end
 
       @doc """
