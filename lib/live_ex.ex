@@ -8,13 +8,13 @@ defmodule LiveEx do
   @callback init(socket) :: socket
 
   defmacro __using__(opts) do
+    pubsub_handler = Keyword.get(opts, :pubsub_handler, :live_ex_pubsub)
+
     quote do
+
       require Logger
 
       import Phoenix.LiveView, only: [assign: 3, assign_new: 3]
-      @pubsub_handler Keyword.get(:pubsub_handler, :live_ex_pubsub)
-
-
       @doc """
       Configures the socket with an initial setup.
 
@@ -23,6 +23,7 @@ defmodule LiveEx do
       """
       @spec init(map, socket) :: socket
       def init(state, socket) when is_map(state) do
+
         socket =
           state
           |> Map.put_new(:topic, "live_ex_topic")
@@ -30,7 +31,7 @@ defmodule LiveEx do
             assign_new(socket, key, fn -> val end)
           end)
 
-        :ok = Phoenix.PubSub.subscribe(@pubsub_handler, socket.assigns.topic)
+        :ok = Phoenix.PubSub.subscribe(unquote(pubsub_handler), socket.assigns.topic)
 
         socket
       end
@@ -40,9 +41,11 @@ defmodule LiveEx do
       """
       @spec dispatch(String.t(), any, socket) :: map
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
+        # pubsub_handler = Keyword.get(opts, :pubsub_handler, :live_ex_pubsub)
+
         action = %{type: type, payload: payload}
 
-        Phoenix.PubSub.broadcast(@pubsub_handler, socket.assigns.topic, action)
+        Phoenix.PubSub.broadcast(unquote(pubsub_handler), socket.assigns.topic, action)
       end
 
       @doc """
