@@ -11,7 +11,7 @@ defmodule LiveEx.MixProject do
         licenses: ["MIT"],
         links: %{"GitHub" => "https://github.com/PJUllrich/live_ex"}
       ],
-      elixir: "~> 1.9.1",
+      elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -27,8 +27,8 @@ defmodule LiveEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 3.1"},
-      {:phoenix_live_view, "~> 0.3.1"}
+      {:jason, "~> 1.0"},
+      {:phoenix_live_view, "~> 0.15.0"}
     ]
   end
 end
