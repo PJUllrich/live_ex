@@ -3,21 +3,16 @@ defmodule LiveExTest do
   doctest LiveEx
 
   alias LiveEx.Example
-  alias Phoenix.LiveView.{View, Socket}
+  alias Phoenix.LiveView.{Socket}
   alias Phoenix.LiveViewTest.Endpoint
-
-  setup_all do
-    {:ok, _pid} = Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
-
-    :ok
-  end
+  alias Phoenix.LiveView.Utils
 
   setup do
     socket =
       %Socket{endpoint: Endpoint}
-      |> View.configure_socket(%{})
+      |> Utils.configure_socket(%{}, nil, %{},URI.parse("https://www.example.com"))
       |> Map.merge(%{connected?: true})
-      |> View.post_mount_prune()
+      |> Utils.post_mount_prune()
 
     [socket: socket]
   end
