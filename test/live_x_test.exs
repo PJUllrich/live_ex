@@ -10,7 +10,7 @@ defmodule LiveExTest do
   setup do
     socket =
       %Socket{endpoint: Endpoint}
-      |> Utils.configure_socket(%{}, nil, %{},URI.parse("https://www.example.com"))
+      |> Utils.configure_socket(%{}, nil, %{}, URI.parse("https://www.example.com"))
       |> Map.merge(%{connected?: true})
       |> Utils.post_mount_prune()
 
@@ -72,6 +72,13 @@ defmodule LiveExTest do
     test "updates the with_payload state", context do
       socket = Example.init(context[:socket])
       {:noreply, socket} = Example.commit(:with_payload, "updated_state", socket)
+
+      assert socket.assigns.with_payload == "updated_state"
+    end
+
+    test "updated with type specified as string", context do
+      socket = Example.init(context[:socket])
+      {:noreply, socket} = Example.commit("with_payload", "updated_state", socket)
 
       assert socket.assigns.with_payload == "updated_state"
     end
