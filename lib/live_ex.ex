@@ -36,7 +36,7 @@ defmodule LiveEx do
       @doc """
       Dispatch an Action with a `type` and an optional payload.
       """
-      @spec dispatch(String.t(), any, socket) :: map
+      @spec dispatch(String.t(), any, socket) :: :ok | {:error, term}
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
@@ -47,6 +47,7 @@ defmodule LiveEx do
       Commit a change to the store.
       """
       @spec commit(String.t(), any, socket) :: {:noreply, socket}
+      @dialyzer {:no_match, commit: 3}
       def commit(type, payload, socket) do
         fn_apply = fn -> apply(__MODULE__, type, [payload, socket]) end
         log_output = unquote(Keyword.get(opts, :log, true))

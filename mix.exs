@@ -28,7 +28,8 @@ defmodule LiveEx.MixProject do
   defp deps do
     [
       {:jason, "~> 1.0"},
-      {:phoenix_live_view, "~> 0.15.0"}
+      {:phoenix_live_view, "~> 0.15.0"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 end
