@@ -3,21 +3,40 @@ defmodule LiveExTest do
   doctest LiveEx
 
   alias LiveEx.Example
-  alias Phoenix.LiveView.{View, Socket}
+  alias Phoenix.LiveView.{Utils, Socket}
   alias Phoenix.LiveViewTest.Endpoint
 
   setup_all do
-    {:ok, _pid} = Phoenix.PubSub.PG2.start_link(:live_ex_pubsub, [])
+    {:ok, _} =
+      Supervisor.start_link([Phoenix.PubSub.child_spec(name: :live_ex_pubsub)],
+        strategy: :one_for_one
+      )
 
     :ok
   end
 
   setup do
+    # Create a socket manually
+    # Taken from: https://github.com/phoenixframework/phoenix_live_view/blob/28f3c6d4a2b534a4a9a8dc7e2e7ccd5c751345c7/test/phoenix_live_view_test.exs#L9
     socket =
-      %Socket{endpoint: Endpoint}
-      |> View.configure_socket(%{})
-      |> Map.merge(%{connected?: true})
-      |> View.post_mount_prune()
+      %Socket{
+        endpoint: Endpoint,
+        router: Phoenix.LiveViewTest.Router,
+        view: Phoenix.LiveViewTest.ParamCounterLive
+      }
+      |> Utils.configure_socket(
+        %{
+          connect_params: %{},
+          connect_info: %{},
+          root_view: Phoenix.LiveViewTest.ParamCounterLive,
+          __changed__: %{}
+        },
+        nil,
+        %{},
+        URI.parse("https://www.example.com")
+      )
+      |> Map.merge(%{transport_pid: self()})
+      |> Utils.post_mount_prune()
 
     [socket: socket]
   end
@@ -56,7 +75,7 @@ defmodule LiveExTest do
       }
 
       :ok = Example.dispatch(event.type, event.payload, socket)
-      assert_receive event
+      assert_receive ^event
     end
 
     test "raises when `init` was not called before dispatching", context do

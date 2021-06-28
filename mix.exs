@@ -4,14 +4,14 @@ defmodule LiveEx.MixProject do
   def project do
     [
       app: :live_ex,
-      version: "0.1.0",
+      version: "0.2.0",
       description: "Flux based State Management for Phoenix LiveView",
       source_url: "https://github.com/PJUllrich/live_ex",
       package: [
         licenses: ["MIT"],
         links: %{"GitHub" => "https://github.com/PJUllrich/live_ex"}
       ],
-      elixir: "~> 1.9.1",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -27,8 +27,10 @@ defmodule LiveEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 3.1"},
-      {:phoenix_live_view, "~> 0.3.1"}
+      {:poison, "~> 4.0"},
+      {:phoenix_live_view, "~> 0.15"},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 end

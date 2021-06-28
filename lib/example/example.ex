@@ -36,20 +36,17 @@ defmodule LiveEx.Example do
   # Actions must call the `commit/3` function and return what the `commit/3` function returns.
 
   @doc """
-  Handles the `type: :no_payload` dispatch and commits the `:no_payload` Mutation.
+  Handles a dispatch and commits a mutation based on the payload of the action.
 
-  `action` here has the format: `%{type: :no_payload, payload: %{}}`
+  `action` here has the format: `%{type: :a_type_here, payload: %{}}`
   """
   @spec handle_info(%{type: String.t(), payload: map}, socket) :: {:noreply, socket}
+  def handle_info(action, socket)
+
   def handle_info(%{type: "no_payload"} = action, socket) do
     commit(action.type, %{}, socket)
   end
 
-  @doc """
-  Handles the `type: :with_payload` dispatch and commits the `:with_payload` Mutation.
-
-  `action` here has the format: `%{type: :with_payload, payload: any}`
-  """
   def handle_info(%{type: "with_payload"} = action, socket) do
     commit(action.type, action.payload, socket)
   end

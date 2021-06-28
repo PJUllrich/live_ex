@@ -36,7 +36,7 @@ defmodule LiveEx do
       @doc """
       Dispatch an Action with a `type` and an optional payload.
       """
-      @spec dispatch(String.t(), any, socket) :: map
+      @spec dispatch(String.t(), any, socket) :: :ok | {:error, term}
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
