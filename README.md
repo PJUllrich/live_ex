@@ -1,5 +1,12 @@
 # LiveEx - State Management for Phoenix LiveViews
 
+## Heads up: This library is not actively developed further
+> This library was initially meant as a Proof of Concept and until today, I haven't used it in a production system (simply because I haven't had a use-case for it).
+>
+> I'm currently only updating its dependencies, but would like to develop it further. However, I don't have the information about what you, the user, needs or misses from the library. That's why I ask you kindly to open an issue for feature requests or other development ideas. I'm open to develop this library further, but am dependent on your input on how to do so.
+> 
+> Thank you in advance!
+
 LiveEx is a State Management library for [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view).
 
 LiveEx is based on the [Flux pattern](https://github.com/facebook/flux/tree/master/examples/flux-concepts)
@@ -44,7 +51,7 @@ Have a look at the [Example Implementation](https://github.com/PJUllrich/LiveEx/
 
 ### Initialize the Store
 
-In order to use the LiveEx Store, create a dedicated `module` for it, which adhere's to the following structure:
+In order to use the LiveEx Store, create a dedicated `module` for it, which adheres to the following structure:
 
 ```elixir
 defmodule MyAppWeb.Store do
