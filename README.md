@@ -40,7 +40,7 @@ Add `live_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:live_ex, github: "pjullrich/live_ex" }
+    {:live_ex, "~> 0.2.0"}
   ]
 end
 ```
