@@ -99,5 +99,12 @@ defmodule LiveExTest do
 
       assert socket.assigns.with_payload == "updated_state"
     end
+
+    test "accepts string-based action types", context do
+      socket = Example.init(context[:socket])
+      {:noreply, socket} = Example.commit("with_payload", "updated_state", socket)
+
+      assert socket.assigns.with_payload == "updated_state"
+    end
   end
 end

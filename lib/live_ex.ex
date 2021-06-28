@@ -46,8 +46,10 @@ defmodule LiveEx do
       @doc """
       Commit a change to the store.
       """
-      @spec commit(String.t(), any, socket) :: {:noreply, socket}
+      @spec commit(atom() | String.t(), any, socket) :: {:noreply, socket}
       def commit(type, payload, socket) do
+        type = if is_atom(type), do: type, else: String.to_existing_atom(type)
+
         fn_apply = fn -> apply(__MODULE__, type, [payload, socket]) end
         log_output = unquote(Keyword.get(opts, :log, true))
 
