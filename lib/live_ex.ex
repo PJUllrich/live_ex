@@ -8,6 +8,9 @@ defmodule LiveEx do
   @callback init(socket) :: socket
 
   defmacro __using__(opts) do
+    pubsub_name = Keyword.get(opts, :pubsub_name, :live_ex_pubsub)
+    log_output = Keyword.get(opts, :log, true)
+
     quote do
       require Logger
 
@@ -28,7 +31,7 @@ defmodule LiveEx do
             assign_new(socket, key, fn -> val end)
           end)
 
-        :ok = Phoenix.PubSub.subscribe(:live_ex_pubsub, socket.assigns.topic)
+        :ok = Phoenix.PubSub.subscribe(unquote(pubsub_name), socket.assigns.topic)
 
         socket
       end
@@ -40,29 +43,29 @@ defmodule LiveEx do
       def dispatch(type, payload \\ nil, socket) when is_binary(type) do
         action = %{type: type, payload: payload}
 
-        Phoenix.PubSub.broadcast(:live_ex_pubsub, socket.assigns.topic, action)
+        Phoenix.PubSub.broadcast(unquote(pubsub_name), socket.assigns.topic, action)
       end
 
       @doc """
       Commit a change to the store.
       """
       @spec commit(atom() | String.t(), any, socket) :: {:noreply, socket}
+      @dialyzer {:no_match, commit: 3}
       def commit(type, payload, socket) do
         type = if is_atom(type), do: type, else: String.to_existing_atom(type)
 
         fn_apply = fn -> apply(__MODULE__, type, [payload, socket]) end
-        log_output = unquote(Keyword.get(opts, :log, true))
 
         socket =
-          case log_output do
-            true -> log(type, payload, socket, fn_apply)
+          case unquote(log_output) do
+            true -> log_and_apply(type, payload, socket, fn_apply)
             false -> fn_apply.()
           end
 
         {:noreply, socket}
       end
 
-      defp log(type, payload, socket, fun) do
+      defp log_and_apply(type, payload, socket, fun) do
         state_before = socket.assigns
         socket = fun.()
         state_after = socket.assigns
