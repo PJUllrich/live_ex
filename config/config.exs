@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :phoenix, :json_library, Poison
+config :phoenix, :json_library, Jason

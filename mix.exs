@@ -27,7 +27,7 @@ defmodule LiveEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 4.0"},
+      {:jason, ">= 0.0.0"},
       {:phoenix_live_view, "~> 0.15"},
 
       # Development and publishing dependencies
