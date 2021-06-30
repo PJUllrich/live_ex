@@ -63,6 +63,26 @@ defmodule LiveExTest do
         Example.init(state_list, context[:socket])
       end
     end
+
+    @doc """
+    As we call init in at least two places it's important to make sure that double subscription does not occur
+    otherwise it leads to double event dispatch which is harmful for events with side effects
+    """
+    test "avoids double subscription when called multiple times", context do
+      state = %{a: 1, b: "Test", c: nil}
+
+      socket = Example.init(state, context[:socket])
+      Example.init(state, socket)
+
+      event = %{
+        type: "test_event",
+        payload: "test_payload"
+      }
+
+      :ok = Example.dispatch(event.type, event.payload, socket)
+      assert_received(^event)
+      refute_receive(^event)
+    end
   end
 
   describe "dispatch" do

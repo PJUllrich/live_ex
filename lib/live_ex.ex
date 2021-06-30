@@ -31,6 +31,7 @@ defmodule LiveEx do
             assign_new(socket, key, fn -> val end)
           end)
 
+        :ok = Phoenix.PubSub.unsubscribe(unquote(pubsub_name), socket.assigns.topic)
         :ok = Phoenix.PubSub.subscribe(unquote(pubsub_name), socket.assigns.topic)
 
         socket
