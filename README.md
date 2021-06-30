@@ -70,17 +70,30 @@ defmodule MyAppWeb.Store do
 
   # Actions
 
-  def handle_info(%{type: "my_action"} = action, socket) do
-    # Perform any operation with the payload here. For example:
-    new_state = socket.assigns.a + action.payload
+  def handle_info(%{type: "my_action", payload: payload} = action, socket) do
+    # This is the Action handler.
+    # In here you would e.g. access your state here, dispatch other actions, transform the payload,
+    # or do anything you like as long as it doesn't change the state, which is done in Mutations.
 
-    commit("my_action", new_state, socket)
+    # E.g. make sure that the payload is an integer
+    payload = 
+      cond do
+        is_integer(payload) -> payload
+        is_binary(payload) -> String.to_integer(payload)
+        true -> raise ArgumentError, message: "payload of my_action must be integer or string-encoded integer"
+      end
+
+    commit("my_action", payload, socket)
   end
 
   # Mutations
 
   def my_action(payload, socket) do
-    assign(socket, :a, payload)
+    # This is the Mutation handler.
+    # This is the only place where you should change your state.
+    new_state = socket.assigns.a + payload
+
+    assign(socket, :a, new_state)
   end
 end
 ```
