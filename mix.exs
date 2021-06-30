@@ -4,7 +4,7 @@ defmodule LiveEx.MixProject do
   def project do
     [
       app: :live_ex,
-      version: "0.3.0",
+      version: "0.3.1",
       description: "Flux based State Management for Phoenix LiveView",
       source_url: "https://github.com/PJUllrich/live_ex",
       package: [
