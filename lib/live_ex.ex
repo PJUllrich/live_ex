@@ -31,7 +31,9 @@ defmodule LiveEx do
             assign_new(socket, key, fn -> val end)
           end)
 
-        :ok = Phoenix.PubSub.subscribe(unquote(pubsub_name), socket.assigns.live_ex_store_topic)
+        if Phoenix.LiveView.connected?(socket) do
+          :ok = Phoenix.PubSub.subscribe(unquote(pubsub_name), socket.assigns.live_ex_store_topic)
+        end
 
         socket
       end

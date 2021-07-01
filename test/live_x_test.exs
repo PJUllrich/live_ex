@@ -78,10 +78,27 @@ defmodule LiveExTest do
       assert_receive ^event
     end
 
-    test "raises when `init` was not called before dispatching", context do
+    test "raises when `init` was not called before dispatching", %{socket: socket} do
       assert_raise KeyError, fn ->
-        Example.dispatch("test", "test", context[:socket])
+        Example.dispatch("test", "test", socket)
       end
+    end
+
+    test "only subscribes to the PubSub topic on the stateful mount", %{socket: socket} do
+      stateless_socket = %Socket{socket | transport_pid: nil}
+      stateless_socket = Example.init(stateless_socket)
+
+      stateful_socket = %Socket{stateless_socket | transport_pid: self()}
+      stateful_socket = Example.init(stateful_socket)
+
+      event = %{
+        type: "test_event",
+        payload: "test_payload"
+      }
+
+      :ok = Example.dispatch(event.type, event.payload, stateful_socket)
+      assert_received(^event)
+      refute_receive(^event)
     end
   end
 
