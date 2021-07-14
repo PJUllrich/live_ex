@@ -125,8 +125,15 @@ Pass all `Store` variables to nested LiveViews and initialize the `Store` within
 **child_live.ex**
 
 ```elixir
-def mount(session, socket) do
-  {:ok, Store.init(session, socket)}
+@use_store_attributes ~w(c d)
+
+def mount(_params, session, socket) do
+  attrs =
+    session
+    |> Map.take(@use_store_attributes)
+    |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
+
+  {:ok, assign(socket, attrs)}
 end
 ```
 
