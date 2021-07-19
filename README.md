@@ -119,21 +119,19 @@ Pass all `Store` variables to nested LiveViews and initialize the `Store` within
 **root.html.leex**
 
 ```elixir
-<%= Phoenix.LiveView.live_render(@socket, MyAppWeb.ChildLive, session: Map.take(assigns, [:a, :b, :c, :d])) %>
+<%= Phoenix.LiveView.live_render(@socket, MyAppWeb.ChildLive, session: %{"store_pid" => @store_pid}) %>
 ```
 
 **child_live.ex**
 
 ```elixir
-@use_store_attributes ~w(c d)
+def mount(_params, %{"store_pid" => store_pid} = _session, socket) do
+  socket =
+    socket
+    |> assign(:store_pid, store_pid)
+    |> Store.init()
 
-def mount(_params, session, socket) do
-  attrs =
-    session
-    |> Map.take(@use_store_attributes)
-    |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
-
-  {:ok, assign(socket, attrs)}
+  {:ok, socket}
 end
 ```
 
@@ -144,13 +142,13 @@ If you want to dispatch an action from any LiveView, simply call the `dispatch/3
 **child_live.ex**
 
 ```elixir
-def handle_event("increment" = event, _value, socket) do
-  Store.dispatch(event, socket)
+def handle_event("increment" = event, _value, %{assigns: %{store_pid: store_pid}} = socket) do
+  Store.dispatch(store_pid, event, socket)
   {:noreply, socket}
 end
-
-def handle_event("add" = event, value, socket) do
-  Store.dispatch(event, value, socket)
+****
+def handle_event("add" = event, value, %{assigns: %{store_pid: store_pid}} = socket) do
+  Store.dispatch(store_pid, event, value, socket)
   {:noreply, socket}
 end
 ```

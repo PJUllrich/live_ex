@@ -74,13 +74,13 @@ defmodule LiveExTest do
         payload: "test_payload"
       }
 
-      :ok = Example.dispatch(event.type, event.payload, socket)
+      :ok = Example.dispatch(self(), event.type, event.payload, socket)
       assert_receive ^event
     end
 
     test "raises when `init` was not called before dispatching", %{socket: socket} do
-      assert_raise KeyError, fn ->
-        Example.dispatch("test", "test", socket)
+      assert_raise RuntimeError, fn ->
+        Example.dispatch(self(), "test", "test", socket)
       end
     end
 
@@ -96,7 +96,7 @@ defmodule LiveExTest do
         payload: "test_payload"
       }
 
-      :ok = Example.dispatch(event.type, event.payload, stateful_socket)
+      :ok = Example.dispatch(self(), event.type, event.payload, stateful_socket)
       assert_received(^event)
       refute_receive(^event)
     end

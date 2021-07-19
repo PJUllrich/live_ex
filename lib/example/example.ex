@@ -5,10 +5,6 @@ defmodule LiveEx.Example do
 
   use LiveEx
 
-  # Optional and for type-safety during development only
-  @behaviour LiveEx
-  @type socket :: Phoenix.LiveView.Socket.t()
-
   # Set an initial (global) state.
   # Set all variables that are part of the global state.
   @initial_state %{
