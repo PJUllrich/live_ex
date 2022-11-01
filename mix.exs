@@ -28,7 +28,7 @@ defmodule LiveEx.MixProject do
   defp deps do
     [
       {:jason, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.18"},
+      {:phoenix_live_view, "~> 0.17.6"},
 
       # Development and publishing dependencies
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
